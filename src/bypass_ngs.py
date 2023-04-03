@@ -9,7 +9,20 @@ from pymem.exception import CouldNotOpenProcess, ProcessNotFound
 
 
 @validate_arguments
-def bypass_ngs(*, sleep_time: int | float = 10.0):
+def bypass_ngs(*, sleep_time: float = 10.0):
+    """
+    Bypass NGS by injecting assembly that causes threads of `BlackCipher64.aes`
+    to sleep indefinitely.
+
+        MOV RCX,0xFFFFFFFF
+        CALL KERNEL32.Sleep
+
+    Parameters
+    ----------
+    sleep_time : float, default 10.0
+        The amount of seconds to sleep between attaching to the process and
+        injecting the bypass code.
+    """
     proc = pymem.Pymem()
     print("Looking for `BlackCipher64.aes`...")
     while True:
@@ -19,9 +32,11 @@ def bypass_ngs(*, sleep_time: int | float = 10.0):
             pass
         else:
             print("Attached to `BlackCipher64.aes`!")
-            sleep_time = float(sleep_time)
             # Ensure that we wait long enough to avoid crashing the process...
-            sleep(10.)
+            # I've found that 10 seconds works well. I've manipulated memory
+            # for several hours with no issues using this value. This may
+            # change depending on the speed of the PC. I haven't tried.
+            sleep(sleep_time)
             break
 
     base = proc.base_address
@@ -29,7 +44,7 @@ def bypass_ngs(*, sleep_time: int | float = 10.0):
     offset = 0x2842fc2
     inject = base + offset
 
-    print(f"Writing bypass to BlackCipher64.aes+{offset:02x} ({inject:02x})")
+    print(f"Writing bypass to BlackCipher64.aes+{offset:02x} ({inject:02x})...")
     # Sleep the thread indefinitely at the inject address.
     # # MOV rcx,0xFFFFFFFF
     # # CALL KERNEL32.Sleep
