@@ -3,18 +3,22 @@ requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "py_ms_injector"
-version = "0.1.0"
 authors = [
     {name = "SenatorShawn"}
 ]
 description = "Small script which (currently) only injects a bypass into `BlackCipher64.aes`"
+name = "py_ms_injector"
 readme = "README.md"
 requires-python = ">=3.8"
+version = "0.2.0"
+
 dependencies = [
     "pydantic",
     "pymem",
 ]
+
+[project.optional-dependencies]
+dev = ["flake8"]
 
 [project.scripts]
 bypass-ngs = "bypass_ngs:bypass_ngs"
