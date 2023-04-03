@@ -13,7 +13,7 @@ future.
 (Alternatively, if you plan on developing...)
 
 ```bash
-> pip install -e .
+> pip install -e .[dev]
 ```
 
 ## Running
